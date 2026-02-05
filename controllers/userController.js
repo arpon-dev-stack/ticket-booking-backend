@@ -58,6 +58,13 @@ export const signUp = async (req, res) => {
     }
 }
 
-export const logOut = async (req, res) => {
+export const signOut = async (req, res) => {
     res.json({message: "logout"})
+}
+
+export const verifyMe = async (req, res) => {
+    res.status(200).json({
+        id: req.user.id,
+        role: req.user.role
+    })
 }
