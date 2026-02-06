@@ -20,8 +20,8 @@ const userSchema = new mongoose.Schema({
         bookingDate: { type: Date, default: Date.now },
         status: {
             type: String,
-            enum: ['Confirmed', 'Cancelled', 'Pending'],
-            default: 'Confirmed'
+            enum: ['confirmed', 'cancelled', 'pending'],
+            default: 'confirmed'
         }
     }],
 

@@ -1,37 +1,48 @@
 import mongoose from "mongoose";
 
 const seatSchema = new mongoose.Schema({
-
-})
+  seatNumber: { type: String, required: true, lowercase: true },
+  booked: {
+    owner: {
+      date: { type: Date },
+      bookedBy: {
+        user: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'User',
+        },
+        name: { type: String }
+      }
+    }
+  }
+});
 
 const busSchema = new mongoose.Schema({
   busNumber: { type: String, required: true },
-  busType: { type: String, enum: ['AC', 'Non-AC', 'Sleeper'], default: 'Non-AC' },
+  busType: { type: String, enum: ['ac', 'non-ac', 'sleeper'], lowercase: true, default: 'non-ac' },
   totalSeats: { type: Number, required: true },
   availableSeats: { type: Number, required: true },
   price: { type: Number, required: true },
-  
+
   departure: {
-    location: { type: String, required: true }, // e.g., "Dhaka"
-    station: { type: String },                 // e.g., "Gabtoli"
-    time: { type: Date, required: true }       // Full ISO Date
-  },
-  
-  arrival: {
-    location: { type: String, required: true }, // e.g., "Sylhet"
+    location: { type: String, required: true, lowercase: true },
     station: { type: String },
     time: { type: Date, required: true }
   },
-  
-  amenities: [String] // e.g., ["WiFi", "Water", "Blanket"],
 
-  
+  arrival: {
+    location: { type: String, required: true, lowercase: true },
+    station: { type: String },
+    time: { type: Date, required: true }
+  },
+
+  amenities: [{ type: String, lowercase: true }],
+
+  // This allows multiple seats in one Bus
+  seatSet: [seatSchema]
+
 });
 
-
-// Adding indexes improves search speed for "from" and "to"
-busSchema.index({ "departure.location": "text", "arrival.location": "text" });
+busSchema.index({ "departure.location": 1, "arrival.location": 1 });
 
 const Bus = mongoose.model('Bus', busSchema);
-
 export default Bus;

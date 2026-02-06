@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import Bus from '../models/Bus.js';
 
-const limit = 10;
 
 export const createBus = async (req, res) => {
   try {
@@ -13,7 +12,7 @@ export const createBus = async (req, res) => {
 };
 export const getBuses = async (req, res) => {
   // Destructure 'date' from the query
-  const { from = '', to = '', date = '', pageNo = 1, limit = 10 } = req.query;
+  const { from = '', to = '', date = '', pageNo = 1 } = req.query;
 
   try {
     const filter = {};
@@ -23,7 +22,7 @@ export const getBuses = async (req, res) => {
 
     // --- Date Filtering Logic ---
     if (date) {
-      const searchDate = new Date(date);
+      const searchDate = new Date(date) || new Date();
       const startOfDay = new Date(searchDate.setHours(0, 0, 0, 0));
       const endOfDay = new Date(searchDate.setHours(23, 59, 59, 999));
 
@@ -36,14 +35,14 @@ export const getBuses = async (req, res) => {
 
     const buses = await Bus.find(filter)
       .sort({ "departure.time": 1 }) // Optional: show earliest buses first
-      .skip((Number(pageNo) - 1) * Number(limit))
-      .limit(Number(limit));
+      .skip((Number(pageNo) - 1) * 10)
+      .limit(10);
 
     const total = await Bus.countDocuments(filter);
 
     res.json({
       buses,
-      totalPages: Math.ceil(total / Number(limit)),
+      totalPages: Math.ceil(total / Number(10)),
       currentPage: Number(pageNo)
     });
   } catch (err) {
@@ -72,12 +71,47 @@ export const updateBus = async (req, res) => {
   }
 };
 
-export const deleteBus = async (req, res) => {
+export const bookSeat = async (req, res) => {
   try {
-    const bus = await Bus.findByIdAndDelete(req.params.id);
-    if (!bus) return res.status(404).json({ error: 'Not found' });
-    res.json({ message: 'Deleted' });
+    const { id } = req.params;
+    const { seatNumber, userId, userName } = req.body;
+
+    console.log(id, seatNumber, userId, userName)
+
+    const bus = await Bus.findOneAndUpdate(
+      { 
+        _id: id, 
+        "seatSet.seatNumber": seatNumber,
+        // Improved Safety: Ensure the seat doesn't have a user ID assigned yet
+        "seatSet.booked.owner.bookedBy.user": null 
+      },
+      { 
+        $set: { 
+          "seatSet.$.booked.owner": {
+            date: new Date(),
+            bookedBy: {
+              user: userId,
+              name: userName
+            }
+          }
+        },
+        $inc: { availableSeats: -1 } 
+      },
+      { new: true, runValidators: true }
+    );
+
+    if (!bus) {
+      // If this triggers, it means either:
+      // 1. Bus ID is wrong
+      // 2. Seat Number doesn't exist (e.g., you sent "Z99")
+      // 3. The seat is ALREADY booked (user is not null)
+      return res.status(400).json({ 
+        error: "Cannot book this seat. It might be already taken or doesn't exist." 
+      });
+    }
+
+    res.json({ message: "Seat booked successfully", bus });
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(500).json({ error: err.message });
   }
 };
