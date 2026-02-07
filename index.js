@@ -1,32 +1,35 @@
+import 'dotenv/config';
 import express from 'express';
-import mongoose from 'mongoose';
-import dotenv from 'dotenv';
-import busesRouter from './routes/buses.js';
-import userRouter from './routes/users.js'
-import cors from 'cors'
+import cors from 'cors';
 
-dotenv.config();
+import connectDB from './config/db.js';
+import route from './src/v1/routes/rootRoute.js';
 
 const app = express();
+
+const port = process.env.PORT;
 
 app.use(cors());
 app.use(express.json());
 
-app.use('/api/buses', busesRouter);
-app.use('/user', userRouter)
+app.use('/swiftbus', route);
 
-const PORT = process.env.PORT || 3000;
-const MONGO = process.env.MONGODB_URI || 'mongodb://localhost:27017/busdb';
-
-async function start() {
+const startServer = async () => {
   try {
-    await mongoose.connect(MONGO);
-    console.log('Connected to MongoDB');
-    app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));
-  } catch (err) {
-    console.error(err);
-    process.exit(1);
+
+    await connectDB();
+
+    app.listen(port, () => {
+
+      console.log(`Server started http://localhost:${port}`);
+
+    })
+
+  } catch (error) {
+
+    console.log("Failed to start the server");
+
   }
 }
 
-start();
+startServer();
