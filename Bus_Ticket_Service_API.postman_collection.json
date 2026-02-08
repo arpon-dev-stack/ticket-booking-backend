@@ -1,0 +1,728 @@
+{
+  "info": {
+    "name": "Bus Ticket Service API",
+    "description": "Complete API collection for Bus Ticket Service",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "USER ENDPOINTS",
+      "item": [
+        {
+          "name": "Sign Up - Valid",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\",\n  \"requested\": false\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/swiftbus/v1/user/signUp",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["swiftbus", "v1", "user", "signUp"]
+            }
+          }
+        },
+        {
+          "name": "Sign Up - Missing Email",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/swiftbus/v1/user/signUp",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["swiftbus", "v1", "user", "signUp"]
+            }
+          }
+        },
+        {
+          "name": "Sign Up - Invalid Email",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"invalid-email\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/swiftbus/v1/user/signUp",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["swiftbus", "v1", "user", "signUp"]
+            }
+          }
+        },
+        {
+          "name": "Sign Up - Password Too Short",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"123\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/swiftbus/v1/user/signUp",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["swiftbus", "v1", "user", "signUp"]
+            }
+          }
+        },
+        {
+          "name": "Sign In - Valid",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/swiftbus/v1/user/signin",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["swiftbus", "v1", "user", "signin"]
+            }
+          }
+        },
+        {
+          "name": "Sign In - Wrong Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"wrongpassword\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/swiftbus/v1/user/signin",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["swiftbus", "v1", "user", "signin"]
+            }
+          }
+        },
+        {
+          "name": "Sign Out",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/swiftbus/v1/user/logout",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["swiftbus", "v1", "user", "logout"]
+            }
+          }
+        },
+        {
+          "name": "Update User - Name",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Jane Doe\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/swiftbus/v1/user/{{userId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["swiftbus", "v1", "user", "{{userId}}"]
+            }
+          }
+        },
+        {
+          "name": "Update User - Multiple Fields",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Jane Smith\",\n  \"password\": \"newpassword123\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/swiftbus/v1/user/{{userId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["swiftbus", "v1", "user", "{{userId}}"]
+            }
+          }
+        },
+        {
+          "name": "Update User - Invalid ID Format",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Jane Doe\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/swiftbus/v1/user/invalid-id",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["swiftbus", "v1", "user", "invalid-id"]
+            }
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/swiftbus/v1/user/{{userId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["swiftbus", "v1", "user", "{{userId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete User - Invalid ID Format",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/swiftbus/v1/user/invalid-id",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["swiftbus", "v1", "user", "invalid-id"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "BUS ENDPOINTS",
+      "item": [
+        {
+          "name": "Get All Buses",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/swiftbus/v1/bus",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["swiftbus", "v1", "bus"]
+            }
+          }
+        },
+        {
+          "name": "Get All Buses - Filter by Departure",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/swiftbus/v1/bus?departure=Delhi",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["swiftbus", "v1", "bus"],
+              "query": [
+                {
+                  "key": "departure",
+                  "value": "Delhi"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get All Buses - Filter by Arrival",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/swiftbus/v1/bus?arrival=Mumbai",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["swiftbus", "v1", "bus"],
+              "query": [
+                {
+                  "key": "arrival",
+                  "value": "Mumbai"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get All Buses - Filter by BusType",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/swiftbus/v1/bus?busType=ac",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["swiftbus", "v1", "bus"],
+              "query": [
+                {
+                  "key": "busType",
+                  "value": "ac"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get All Buses - Multiple Filters",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/swiftbus/v1/bus?departure=Delhi&arrival=Mumbai&busType=ac",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["swiftbus", "v1", "bus"],
+              "query": [
+                {
+                  "key": "departure",
+                  "value": "Delhi"
+                },
+                {
+                  "key": "arrival",
+                  "value": "Mumbai"
+                },
+                {
+                  "key": "busType",
+                  "value": "ac"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Single Bus",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/swiftbus/v1/bus/{{busId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["swiftbus", "v1", "bus", "{{busId}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Single Bus - Invalid ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/swiftbus/v1/bus/invalid-id",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["swiftbus", "v1", "bus", "invalid-id"]
+            }
+          }
+        },
+        {
+          "name": "Create Bus - Valid",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"busNumber\": \"DL-01\",\n  \"totalSeat\": 45,\n  \"departure\": {\n    \"location\": \"Delhi\",\n    \"date\": \"2026-02-15T10:00:00Z\"\n  },\n  \"arrival\": {\n    \"location\": \"Mumbai\",\n    \"date\": \"2026-02-15T22:00:00Z\"\n  },\n  \"busType\": [\"non-ac\"],\n  \"amodities\": [\"waterbattle\", \"charger\"]\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/swiftbus/v1/bus",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["swiftbus", "v1", "bus"]
+            }
+          }
+        },
+        {
+          "name": "Create Bus - Missing BusNumber",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"totalSeat\": 45,\n  \"departure\": {\n    \"location\": \"Delhi\",\n    \"date\": \"2026-02-15T10:00:00Z\"\n  },\n  \"arrival\": {\n    \"location\": \"Mumbai\",\n    \"date\": \"2026-02-15T22:00:00Z\"\n  }\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/swiftbus/v1/bus",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["swiftbus", "v1", "bus"]
+            }
+          }
+        },
+        {
+          "name": "Create Bus - Invalid TotalSeat",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"busNumber\": \"DL-02\",\n  \"totalSeat\": \"forty-five\",\n  \"departure\": {\n    \"location\": \"Delhi\",\n    \"date\": \"2026-02-15T10:00:00Z\"\n  },\n  \"arrival\": {\n    \"location\": \"Mumbai\",\n    \"date\": \"2026-02-15T22:00:00Z\"\n  }\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/swiftbus/v1/bus",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["swiftbus", "v1", "bus"]
+            }
+          }
+        },
+        {
+          "name": "Create Bus - Invalid Date Format",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"busNumber\": \"DL-03\",\n  \"totalSeat\": 45,\n  \"departure\": {\n    \"location\": \"Delhi\",\n    \"date\": \"invalid-date\"\n  },\n  \"arrival\": {\n    \"location\": \"Mumbai\",\n    \"date\": \"2026-02-15T22:00:00Z\"\n  }\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/swiftbus/v1/bus",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["swiftbus", "v1", "bus"]
+            }
+          }
+        },
+        {
+          "name": "Update Bus - Multiple Fields",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"totalSeat\": 50,\n  \"busType\": [\"ac\"],\n  \"amodities\": [\"waterbattle\", \"charger\", \"wifi\"]\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/swiftbus/v1/bus/{{busId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["swiftbus", "v1", "bus", "{{busId}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Bus - Invalid ID",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"totalSeat\": 50\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/swiftbus/v1/bus/invalid-id",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["swiftbus", "v1", "bus", "invalid-id"]
+            }
+          }
+        },
+        {
+          "name": "Delete Bus",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/swiftbus/v1/bus/{{busId}}",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["swiftbus", "v1", "bus", "{{busId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Bus - Invalid ID",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/swiftbus/v1/bus/invalid-id",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["swiftbus", "v1", "bus", "invalid-id"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "PAYMENT ENDPOINTS",
+      "item": [
+        {
+          "name": "Make Payment - Valid",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"paymentId\": \"{{userId}}\",\n  \"amount\": 500,\n  \"busId\": \"{{busId}}\",\n  \"seat\": \"A1\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/swiftbus/v1/payment",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["swiftbus", "v1", "payment"]
+            }
+          }
+        },
+        {
+          "name": "Make Payment - Missing PaymentId",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 500,\n  \"busId\": \"{{busId}}\",\n  \"seat\": \"A1\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/swiftbus/v1/payment",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["swiftbus", "v1", "payment"]
+            }
+          }
+        },
+        {
+          "name": "Make Payment - Missing Amount",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"paymentId\": \"{{userId}}\",\n  \"busId\": \"{{busId}}\",\n  \"seat\": \"A1\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/swiftbus/v1/payment",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["swiftbus", "v1", "payment"]
+            }
+          }
+        },
+        {
+          "name": "Make Payment - Negative Amount",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"paymentId\": \"{{userId}}\",\n  \"amount\": -100,\n  \"busId\": \"{{busId}}\",\n  \"seat\": \"A1\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/swiftbus/v1/payment",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["swiftbus", "v1", "payment"]
+            }
+          }
+        },
+        {
+          "name": "Make Payment - Missing BusId",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"paymentId\": \"{{userId}}\",\n  \"amount\": 500,\n  \"seat\": \"A1\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/swiftbus/v1/payment",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["swiftbus", "v1", "payment"]
+            }
+          }
+        },
+        {
+          "name": "Make Payment - Missing Seat",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"paymentId\": \"{{userId}}\",\n  \"amount\": 500,\n  \"busId\": \"{{busId}}\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/swiftbus/v1/payment",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["swiftbus", "v1", "payment"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "userId",
+      "value": "507f1f77bcf86cd799439011",
+      "type": "string"
+    },
+    {
+      "key": "busId",
+      "value": "507f1f77bcf86cd799439022",
+      "type": "string"
+    }
+  ]
+}

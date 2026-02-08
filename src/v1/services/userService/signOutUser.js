@@ -1,13 +1,11 @@
 const signOutUser = async (req, res) => {
-
     try {
-
-        res.send('signOut');
+        res.status(200).json({
+            message: 'Sign out successful'
+        });
 
     } catch (error) {
-
-        res.send('signOut error');
-
+        res.status(500).json({ message: error.message || 'Internal server error' });
     }
 }
 
