@@ -1,0 +1,6 @@
+{
+  "debug.javascript.autoAttachFilter": "disabled",
+  "[javascript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  }
+}

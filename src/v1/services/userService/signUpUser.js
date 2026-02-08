@@ -5,13 +5,13 @@ const signUpUser = async (req, res) => {
 
     try {
 
-        const { password, email, name, requested = false } = req.body;
+        const { password, email, name } = req.body;
 
         const exist = await User.findOne({ email });
 
         if (exist) return res.status(400).json({ message: 'User already exist' });
 
-        const newUser = await User.create({ name, email, password, requested });
+        const newUser = await User.create({ name, email, password });
 
         const userResponse = newUser.toObject();
         delete userResponse.password

@@ -5,9 +5,14 @@ import signOutUser from '../services/userService/signOutUser.js';
 import updateUser from '../services/userService/updateUser.js';
 import deleteUser from '../services/userService/deleteUser.js';
 import { signupValidation, signinValidation, updateUserValidation, deleteUserValidation } from '../middleware/validator/userValidator.js';
+import { authorize, verify } from '../middleware/verify.js';
+import userInfo from '../services/userService/userInfo.js';
+import adminInfo from '../services/userService/adminInfo.js';
 
 const route = express.Router();
 
+route.get('/', verify, authorize('user'), userInfo);
+route.get('/admin', verify, authorize('admin'), adminInfo);
 route.post('/signin', signinValidation, signInUser);
 route.post('/signUp', signupValidation, signUpUser);
 route.post('/logout', signOutUser);

@@ -4,7 +4,6 @@ import { body, param, validationResult } from 'express-validator';
 const signupValidation = [
     body('email').isEmail().withMessage('Please provide a valid email').normalizeEmail().trim(),
     body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
-    body('requested').optional().isBoolean().toBoolean(),
     body('name').isString().trim().notEmpty().withMessage('Name is required').matches(/^[A-Za-z\s'-]+$/).withMessage('only letter and space allowed'),
 
     (req, res, next) => {

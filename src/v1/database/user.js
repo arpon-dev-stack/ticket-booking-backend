@@ -9,7 +9,6 @@ const userSchema = mongoose.Schema({
         default: ['user']
     },
     email: { type: String, required: true, unique: true },
-    requested: { type: Boolean },
     password: { type: String, required: true }
 });
 
