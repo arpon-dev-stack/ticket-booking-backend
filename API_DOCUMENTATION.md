@@ -130,9 +130,19 @@ http://localhost:PORT/swiftbus
 
 ## 2. BUS ENDPOINTS
 
+**Authentication & Authorization**:
+- All endpoints require JWT token in `Authorization: Bearer <token>` header
+- GET endpoints: Any authenticated user
+- POST/DELETE: Admin role required
+- PUT: Any authenticated user
+
 ### 2.1 Get All Buses
 - **Endpoint**: `GET /v1/bus`
 - **Description**: Retrieve all buses with optional filters
+- **Headers**:
+  ```
+  Authorization: Bearer <jwt_token>
+  ```
 - **Query Parameters** (all optional):
   - `departure`: Filter by departure location (case-insensitive)
   - `arrival`: Filter by arrival location (case-insensitive)
@@ -148,6 +158,9 @@ http://localhost:PORT/swiftbus
         "_id": "...",
         "busNumber": "DL-01",
         "totalSeat": 45,
+        "seatsPerRow": 4,
+        "price": 500,
+        "availableSeats": 40,
         "departure": {
           "location": "Delhi",
           "date": "2026-02-10T10:00:00Z"
@@ -157,8 +170,7 @@ http://localhost:PORT/swiftbus
           "date": "2026-02-10T22:00:00Z"
         },
         "busType": ["non-ac"],
-        "amodities": ["waterbattle"],
-        "seatSet": []
+        "amodities": ["waterbattle"]
       }
     ]
   }
@@ -167,6 +179,10 @@ http://localhost:PORT/swiftbus
 ### 2.2 Get Single Bus
 - **Endpoint**: `GET /v1/bus/:id`
 - **Description**: Get details of a specific bus
+- **Headers**:
+  ```
+  Authorization: Bearer <jwt_token>
+  ```
 - **URL Parameters**:
   - `id`: Bus ID (MongoDB ObjectId)
 - **Response** (200):
@@ -177,6 +193,9 @@ http://localhost:PORT/swiftbus
       "_id": "...",
       "busNumber": "DL-01",
       "totalSeat": 45,
+      "seatsPerRow": 4,
+      "price": 500,
+      "availableSeats": 40,
       "departure": {
         "location": "Delhi",
         "date": "2026-02-10T10:00:00Z"
@@ -187,19 +206,27 @@ http://localhost:PORT/swiftbus
       },
       "busType": ["non-ac"],
       "amodities": ["waterbattle"],
-      "seatSet": []
-    }
+      "seatSet": [...]
+    },
+    "availableSeats": 40
   }
   ```
 
-### 2.3 Create Bus
+### 2.3 Create Bus (Admin Only)
 - **Endpoint**: `POST /v1/bus`
-- **Description**: Add a new bus to the system
+- **Description**: Add a new bus to the system (requires admin role)
+- **Headers**:
+  ```
+  Authorization: Bearer <admin_jwt_token>
+  ```
+- **Automatic Seat Generation**: Seats are auto-generated as A1, A2, A3, A4, B1, B2, B3, B4, etc. based on totalSeat and seatsPerRow
 - **Request Body**:
   ```json
   {
     "busNumber": "DL-01",
-    "totalSeat": 45,
+    "totalSeat": 40,
+    "seatsPerRow": 4,
+    "price": 500,
     "departure": {
       "location": "Delhi",
       "date": "2026-02-10T10:00:00Z"
@@ -209,19 +236,20 @@ http://localhost:PORT/swiftbus
       "date": "2026-02-10T22:00:00Z"
     },
     "busType": ["non-ac"],
-    "amodities": ["waterbattle", "charger"],
-    "seatSet": []
+    "amodities": ["waterbattle", "charger"]
   }
   ```
 - **Validation Rules**:
   - `busNumber`: Required, string
-  - `totalSeat`: Required, positive integer
+  - `totalSeat`: Required, positive integer (total number of seats)
+  - `seatsPerRow`: Optional, positive integer (default: 4) - determines layout
+  - `price`: Required, numeric - ticket price per seat
   - `departure.location`: Required, string
   - `departure.date`: Required, valid ISO8601 date
   - `arrival.location`: Required, string
   - `arrival.date`: Required, valid ISO8601 date
-  - `busType`: Optional, array
-  - `amodities`: Optional, array
+  - `busType`: Optional, array (ac, non-ac, sleeper)
+  - `amodities`: Optional, array (waterbattle, charger, wifi)
 - **Response** (201):
   ```json
   {
@@ -229,15 +257,27 @@ http://localhost:PORT/swiftbus
     "bus": {
       "_id": "...",
       "busNumber": "DL-01",
-      "totalSeat": 45,
-      ...
-    }
+      "totalSeat": 40,
+      "seatsPerRow": 4,
+      "price": 500,
+      "availableSeats": 40,
+      "seatSet": [
+        {"seatNumber": "A1", "booked": {"owner": null, "name": null, "date": null}},
+        {"seatNumber": "A2", "booked": {"owner": null, "name": null, "date": null}},
+        ...
+      ]
+    },
+    "availableSeats": 40
   }
   ```
 
 ### 2.4 Update Bus
 - **Endpoint**: `PUT /v1/bus/:id`
 - **Description**: Update bus information
+- **Headers**:
+  ```
+  Authorization: Bearer <jwt_token>
+  ```
 - **URL Parameters**:
   - `id`: Bus ID (MongoDB ObjectId)
 - **Request Body** (all optional):
@@ -245,6 +285,8 @@ http://localhost:PORT/swiftbus
   {
     "busNumber": "DL-01-NEW",
     "totalSeat": 50,
+    "seatsPerRow": 5,
+    "price": 600,
     "departure": {
       "location": "New Delhi",
       "date": "2026-02-11T10:00:00Z"
@@ -257,6 +299,7 @@ http://localhost:PORT/swiftbus
     "amodities": ["waterbattle", "charger", "wifi"]
   }
   ```
+- **Note**: If `totalSeat` or `seatsPerRow` is updated, all seats will be regenerated automatically
 - **Response** (200):
   ```json
   {
@@ -265,9 +308,13 @@ http://localhost:PORT/swiftbus
   }
   ```
 
-### 2.5 Delete Bus
+### 2.5 Delete Bus (Admin Only)
 - **Endpoint**: `DELETE /v1/bus/:id`
-- **Description**: Remove a bus from the system
+- **Description**: Remove a bus from the system (requires admin role)
+- **Headers**:
+  ```
+  Authorization: Bearer <admin_jwt_token>
+  ```
 - **URL Parameters**:
   - `id`: Bus ID (MongoDB ObjectId)
 - **Response** (200):
@@ -336,7 +383,26 @@ http://localhost:PORT/swiftbus
 ### Unauthorized (401)
 ```json
 {
-  "message": "Invalid email or password"
+  "message": "No token provided. Please log in."
+}
+```
+Or:
+```json
+{
+  "message": "Invalid token. Please log in."
+}
+```
+Or:
+```json
+{
+  "message": "Token expired. Please log in again."
+}
+```
+
+### Forbidden (403)
+```json
+{
+  "message": "Access denied. admin role required."
 }
 ```
 
@@ -366,8 +432,9 @@ http://localhost:PORT/swiftbus
 ## Common HTTP Status Codes
 - **200 OK**: Successful GET, PUT request
 - **201 Created**: Successful POST request
-- **400 Bad Request**: Validation error
-- **401 Unauthorized**: Authentication failed
+- **400 Bad Request**: Validation error or invalid request
+- **401 Unauthorized**: Authentication failed (missing/invalid/expired token)
+- **403 Forbidden**: Authorization failed (insufficient role/permissions)
 - **404 Not Found**: Resource not found
 - **409 Conflict**: Resource already exists
 - **500 Internal Server Error**: Server error
@@ -397,42 +464,86 @@ http://localhost:PORT/swiftbus
 
 ---
 
-## Example Workflow
+## Authentication & Authorization
 
-1. **Register User**:
+### Authentication via JWT Token
+1. User signs in and receives JWT token with `id` and `role`
+2. Include token in all bus-related requests:
+   ```
+   Headers: {
+     "Authorization": "Bearer <jwt_token>"
+   }
+   ```
+3. Token expires in 15 minutes - sign in again to get a new one
+
+### Role-Based Access Control
+- **Admin**: Can create, update, delete buses
+- **User**: Can view and update buses, but cannot create/delete
+- Default role: `user` (assigned on signup)
+
+## Seat System
+
+### Auto-Generated Seat Naming
+When a bus is created with `totalSeat: 40` and `seatsPerRow: 4`:
+- Automatically generates 40 seats
+- Named sequentially: A1, A2, A3, A4, B1, B2, B3, B4, ... J1, J2, J3, J4
+- Each seat structure:
+  ```json
+  {
+    "seatNumber": "A1",
+    "booked": {
+      "owner": null,
+      "name": null,
+      "date": null
+    }
+  }
+  ```
+
+### Available Seats Calculation
+- Formula: `availableSeats = totalSeat - booked_seats_count`
+- Returned in all GET responses
+- Updated in real-time as bookings occur
+
+## Example Complete Workflow
+
+1. **Register** (no auth needed):
    ```
    POST /swiftbus/v1/user/signUp
-   {
+   Body: {
      "name": "John Doe",
      "email": "john@example.com",
      "password": "password123"
    }
    ```
 
-2. **Sign In**:
+2. **Login** (get JWT token):
    ```
    POST /swiftbus/v1/user/signin
-   {
+   Body: {
      "email": "john@example.com",
      "password": "password123"
    }
+   Response: { "token": "jwt_here", "user": {...} }
    ```
-   Get token from response.
 
-3. **Search Buses**:
+3. **Search Buses** (requires auth):
    ```
    GET /swiftbus/v1/bus?departure=Delhi&arrival=Mumbai
+   Headers: { "Authorization": "Bearer jwt_here" }
+   Response: { "buses": [...], each with "availableSeats" count }
    ```
 
-4. **Get Bus Details**:
+4. **View Bus Details** (requires auth):
    ```
    GET /swiftbus/v1/bus/{busId}
+   Headers: { "Authorization": "Bearer jwt_here" }
+   Response: { "bus": {...}, "availableSeats": 40 }
    ```
 
-5. **Make Payment**:
+5. **Make Payment** (no auth needed):
    ```
    POST /swiftbus/v1/payment
-   {
+   Body: {
      "paymentId": "{userId}",
      "amount": 500,
      "busId": "{busId}",
@@ -440,7 +551,7 @@ http://localhost:PORT/swiftbus
    }
    ```
 
-6. **Sign Out**:
+6. **Logout**:
    ```
    POST /swiftbus/v1/user/logout
    ```

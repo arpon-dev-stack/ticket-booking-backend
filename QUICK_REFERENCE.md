@@ -20,13 +20,15 @@
 
 ## 2. BUS ENDPOINTS (5 endpoints)
 
-| # | Endpoint | Method | Auth | Input Parameters | Response | Status Codes |
-|---|----------|--------|------|------------------|----------|--------------|
-| 1 | `/v1/bus` | GET | ❌ | Query: `departure` (string), `arrival` (string), `busType` (string) | Array of buses | 200 |
-| 2 | `/v1/bus/:id` | GET | ❌ | (no body) | Bus object | 200, 400, 404 |
-| 3 | `/v1/bus` | POST | ❌ | `busNumber` (string), `totalSeat` (integer), `departure` (object), `arrival` (object), `busType` (array), `amodities` (array) | Bus object | 201, 400, 409 |
-| 4 | `/v1/bus/:id` | PUT | ❌ | `busNumber` (string), `totalSeat` (integer), `departure` (object), `arrival` (object), `busType` (array), `amodities` (array) | Updated bus object | 200, 400, 404 |
-| 5 | `/v1/bus/:id` | DELETE | ❌ | (no body) | Deleted bus object | 200, 400, 404 |
+**All bus endpoints require authentication (JWT token in Authorization header)**
+
+| # | Endpoint | Method | Auth | Role | Input Parameters | Response | Status Codes |
+|---|----------|--------|------|------|------------------|----------|--------------|
+| 1 | `/v1/bus` | GET | ✅ | Any | Query: `departure`, `arrival`, `busType` | Array of buses with `availableSeats` | 200, 401 |
+| 2 | `/v1/bus/:id` | GET | ✅ | Any | (no body) | Bus object with `availableSeats` | 200, 401, 404 |
+| 3 | `/v1/bus` | POST | ✅ | Admin | `busNumber`, `totalSeat`, `seatsPerRow`, `price`, `departure`, `arrival`, `busType`, `amodities` | Bus object with auto-generated seats | 201, 400, 401, 403, 409 |
+| 4 | `/v1/bus/:id` | PUT | ✅ | Any | All fields optional | Updated bus object | 200, 400, 401, 404 |
+| 5 | `/v1/bus/:id` | DELETE | ✅ | Admin | (no body) | Deleted bus object | 200, 401, 403, 404 |
 
 ---
 
@@ -143,6 +145,7 @@ ERROR RESPONSES:
 ### GET ALL BUSES
 ```
 GET /swiftbus/v1/bus?departure=Delhi&arrival=Mumbai&busType=ac
+Authorization: Bearer <jwt_token>
 
 QUERY PARAMETERS (all optional):
 - departure: Location name (case-insensitive)
@@ -157,7 +160,10 @@ OUTPUT (200):
     {
       "_id": "MongoDB ObjectId",
       "busNumber": "DL-01",
-      "totalSeat": 45,
+      "totalSeat": 40,
+      "seatsPerRow": 4,
+      "price": 500,
+      "availableSeats": 35,
       "departure": {
         "location": "Delhi",
         "date": "2026-02-15T10:00:00Z"
@@ -167,37 +173,57 @@ OUTPUT (200):
         "date": "2026-02-15T22:00:00Z"
       },
       "busType": ["non-ac"],
-      "amodities": ["waterbattle"],
-      "seatSet": []
+      "amodities": ["waterbattle"]
     }
   ]
 }
+
+ERROR RESPONSES:
+- 401: No token provided or invalid token
 ```
 
 ### GET SINGLE BUS
 ```
 GET /swiftbus/v1/bus/507f1f77bcf86cd799439011
+Authorization: Bearer <jwt_token>
 
 OUTPUT (200):
 {
   "message": "Bus retrieved successfully",
-  "bus": { ... }
+  "bus": {
+    "_id": "MongoDB ObjectId",
+    "busNumber": "DL-01",
+    "totalSeat": 40,
+    "seatsPerRow": 4,
+    "price": 500,
+    "availableSeats": 35,
+    "departure": { "location": "Delhi", "date": "2026-02-15T10:00:00Z" },
+    "arrival": { "location": "Mumbai", "date": "2026-02-15T22:00:00Z" },
+    "busType": ["non-ac"],
+    "amodities": ["waterbattle"],
+    "seatSet": [...]
+  },
+  "availableSeats": 35
 }
 
 ERROR RESPONSES:
 - 400: Invalid ID format
+- 401: No token provided or invalid token
 - 404: Bus not found
 ```
 
-### CREATE BUS
+### CREATE BUS (Admin Only)
 ```
 POST /swiftbus/v1/bus
 Content-Type: application/json
+Authorization: Bearer <admin_jwt_token>
 
 INPUT:
 {
   "busNumber": "DL-01",                    // Required: Unique string
-  "totalSeat": 45,                         // Required: Positive integer
+  "totalSeat": 40,                         // Required: Positive integer (total seats)
+  "seatsPerRow": 4,                        // Optional: Positive integer (default: 4)
+  "price": 500,                            // Required: Numeric (ticket price per seat)
   "departure": {
     "location": "Delhi",                   // Required: String
     "date": "2026-02-15T10:00:00Z"        // Required: ISO8601 date
@@ -206,18 +232,40 @@ INPUT:
     "location": "Mumbai",                  // Required: String
     "date": "2026-02-15T22:00:00Z"        // Required: ISO8601 date
   },
-  "busType": ["non-ac"],                   // Optional: Array of types
-  "amodities": ["waterbattle"]             // Optional: Array of amenities
+  "busType": ["non-ac"],                   // Optional: Array of types (ac, non-ac, sleeper)
+  "amodities": ["waterbattle"]             // Optional: Array of amenities (waterbattle, charger, wifi)
 }
 
 OUTPUT (201):
 {
   "message": "Bus created successfully",
-  "bus": { ... }
+  "bus": {
+    "_id": "MongoDB ObjectId",
+    "busNumber": "DL-01",
+    "totalSeat": 40,
+    "seatsPerRow": 4,
+    "price": 500,
+    "availableSeats": 40,
+    "seatSet": [
+      {"seatNumber": "A1", "booked": {"owner": null, "name": null, "date": null}},
+      {"seatNumber": "A2", "booked": {"owner": null, "name": null, "date": null}},
+      ...
+    ],
+    "departure": { "location": "Delhi", "date": "2026-02-15T10:00:00Z" },
+    "arrival": { "location": "Mumbai", "date": "2026-02-15T22:00:00Z" },
+    "busType": ["non-ac"],
+    "amodities": ["waterbattle"]
+  },
+  "availableSeats": 40
 }
+
+SEATS AUTO-GENERATED:
+Named as: A1, A2, A3, A4 (Row A), B1, B2, B3, B4 (Row B), etc.
 
 ERROR RESPONSES:
 - 400: Missing required fields, invalid types, invalid dates
+- 401: No token provided or invalid token
+- 403: Admin role required
 - 409: Bus number already exists
 ```
 
@@ -225,13 +273,16 @@ ERROR RESPONSES:
 ```
 PUT /swiftbus/v1/bus/507f1f77bcf86cd799439011
 Content-Type: application/json
+Authorization: Bearer <jwt_token>
 
 INPUT (all optional):
 {
   "busNumber": "DL-01-NEW",
   "totalSeat": 50,
-  "departure": { ... },
-  "arrival": { ... },
+  "seatsPerRow": 5,
+  "price": 600,
+  "departure": { "location": "New Delhi", "date": "2026-02-16T10:00:00Z" },
+  "arrival": { "location": "New Mumbai", "date": "2026-02-16T22:00:00Z" },
   "busType": ["ac"],
   "amodities": ["waterbattle", "charger", "wifi"]
 }
@@ -242,26 +293,32 @@ OUTPUT (200):
   "bus": { ... }
 }
 
+NOTE: If totalSeat or seatsPerRow is updated, all seats will be regenerated automatically.
+
 ERROR RESPONSES:
 - 400: Invalid ID format, invalid data types
+- 401: No token provided or invalid token
 - 404: Bus not found
 ```
 
-### DELETE BUS
+### DELETE BUS (Admin Only)
 ```
 DELETE /swiftbus/v1/bus/507f1f77bcf86cd799439011
+Authorization: Bearer <admin_jwt_token>
 
 OUTPUT (200):
 {
   "message": "Bus deleted successfully",
   "bus": {
-    "id": "MongoDB ObjectId",
+    "_id": "MongoDB ObjectId",
     "busNumber": "DL-01"
   }
 }
 
 ERROR RESPONSES:
 - 400: Invalid ID format
+- 401: No token provided or invalid token
+- 403: Admin role required
 - 404: Bus not found
 ```
 

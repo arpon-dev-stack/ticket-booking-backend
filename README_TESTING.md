@@ -2,7 +2,61 @@
 
 ## 📋 Overview
 
-This document provides complete testing information for the Bus Ticket Service API with **11 endpoints**, **22+ methods**, and **53+ test cases**.
+This document provides complete testing information for the Bus Ticket Service API with **11 endpoints** supporting authenticated requests with JWT tokens, role-based access control, automatic seat generation, and real-time availability tracking.
+
+---
+
+## 🔐 Authentication Setup for Testing
+
+### Getting a JWT Token
+
+**Step 1: Sign Up (or Sign In)**
+```bash
+curl -X POST http://localhost:3000/swiftbus/v1/user/signUp \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Test User",
+    "email": "test@example.com",
+    "password": "password123"
+  }'
+```
+
+**Response includes token:**
+```json
+{
+  "message": "User created successfully",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": { "id": "...", "name": "Test User", "role": ["user"] }
+}
+```
+
+**Step 2: Use token in requests**
+```bash
+curl -X GET http://localhost:3000/swiftbus/v1/bus \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+```
+
+### Getting Admin Role (for testing)
+
+To test admin endpoints (POST/DELETE bus), you need an admin user:
+
+**Option 1: Modify user role in database directly**
+```javascript
+// In MongoDB
+db.users.updateOne(
+  { email: "admin@example.com" },
+  { $set: { role: ["admin"] } }
+)
+```
+
+**Option 2: Create admin via signup, then manually update role**
+- Sign up first, get the user ID
+- Update that user's role to ["admin"] in database
+
+### Token Expiration
+- Tokens expire in **15 minutes**
+- After expiration, user must sign in again to get new token
+- Expired token error: `"Token expired. Please log in again."`
 
 ---
 
@@ -88,25 +142,42 @@ PASS  src/v1/__tests__/api.test.js
 
 ### Method 2: Manual Testing with Postman
 
-**Steps:**
+**Setup:**
 1. Install Postman from https://www.postman.com/
 2. Open Postman
-3. Click "Import" button
-4. Select `Bus_Ticket_Service_API.postman_collection.json`
-5. Set environment variables:
-   - `userId`: Copy from signup response
-   - `busId`: Copy from create bus response
-6. Run requests one by one
-7. Validate responses match expected outputs
+3. Import: Click Import button → Select `Bus_Ticket_Service_API.postman_collection.json`
+
+**Set Environment Variables:**
+1. Click "Environments" in left sidebar
+2. Create new environment (e.g., "Dev Local")
+3. Add variables:
+   ```
+   - base_url: http://localhost:3000
+   - token: <paste JWT token here>
+   - userId: <paste from signup response>
+   - busId: <paste from create bus response>
+   - adminToken: <paste admin user's JWT token>
+   ```
+
+**Important: Add Authorization Headers**
+- For all bus endpoints, add to Headers:
+  ```
+  Authorization: Bearer {{token}}
+  ```
+- For admin endpoints (POST/DELETE bus), use:
+  ```
+  Authorization: Bearer {{adminToken}}
+  ```
 
 **Quick Test Workflow:**
-1. Sign Up User → Copy ID to `userId`
-2. Create Bus → Copy ID to `busId`
-3. Get Buses (all, filtered)
-4. Update Bus
-5. Make Payment
-6. Delete Bus
-7. Delete User
+1. Sign Up User → Get token → Save to `token` variable
+2. Get All Buses (use token header)
+3. Create Bus (use adminToken header) → Save ID to `busId`
+4. Get Single Bus (use token header)
+5. Update Bus (use token header)
+6. Make Payment → Get paymentId
+7. Delete Bus (use adminToken header)
+8. Delete User
 
 ---
 
@@ -119,30 +190,33 @@ curl -X POST http://localhost:3000/swiftbus/v1/user/signUp \
   -d '{"name":"Test User","email":"test@example.com","password":"password123"}'
 ```
 
-**Sign In:**
-```bash
-curl -X POST http://localhost:3000/swiftbus/v1/user/signin \
-  -H "Content-Type: application/json" \
-  -d '{"email":"test@example.com","password":"password123"}'
+**Response includes token:**
+```
+"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 ```
 
-**Get All Buses:**
+**Get All Buses (requires token):**
 ```bash
-curl http://localhost:3000/swiftbus/v1/bus
+curl http://localhost:3000/swiftbus/v1/bus \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE"
 ```
 
-**Filter Buses:**
+**Get Buses with Filter (requires token):**
 ```bash
-curl "http://localhost:3000/swiftbus/v1/bus?departure=Delhi&arrival=Mumbai"
+curl "http://localhost:3000/swiftbus/v1/bus?departure=Delhi&arrival=Mumbai" \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE"
 ```
 
-**Create Bus:**
+**Create Bus (requires admin token):**
 ```bash
 curl -X POST http://localhost:3000/swiftbus/v1/bus \
   -H "Content-Type: application/json" \
+  -H "Authorization: Bearer ADMIN_TOKEN_HERE" \
   -d '{
     "busNumber":"DL-01",
-    "totalSeat":45,
+    "totalSeat":40,
+    "seatsPerRow":4,
+    "price":500,
     "departure":{"location":"Delhi","date":"2026-02-15T10:00:00Z"},
     "arrival":{"location":"Mumbai","date":"2026-02-15T22:00:00Z"}
   }'
