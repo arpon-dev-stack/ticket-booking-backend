@@ -26,7 +26,7 @@
 |---|----------|--------|------|------|------------------|----------|--------------|
 | 1 | `/v1/bus` | GET | ✅ | Any | Query: `departure`, `arrival`, `busType` | Array of buses with `availableSeats` | 200, 401 |
 | 2 | `/v1/bus/:id` | GET | ✅ | Any | (no body) | Bus object with `availableSeats` | 200, 401, 404 |
-| 3 | `/v1/bus` | POST | ✅ | Admin | `busNumber`, `totalSeat`, `seatsPerRow`, `price`, `departure`, `arrival`, `busType`, `amodities` | Bus object with auto-generated seats | 201, 400, 401, 403, 409 |
+| 3 | `/v1/bus` | POST | ✅ | Admin | `busNumber`, `totalSeat`, `seatsPerRow`, `price`, `departure`, `arrival`, `busType`, `amenities` | Bus object with auto-generated seats | 201, 400, 401, 403, 409 |
 | 4 | `/v1/bus/:id` | PUT | ✅ | Any | All fields optional | Updated bus object | 200, 400, 401, 404 |
 | 5 | `/v1/bus/:id` | DELETE | ✅ | Admin | (no body) | Deleted bus object | 200, 401, 403, 404 |
 
@@ -173,7 +173,7 @@ OUTPUT (200):
         "date": "2026-02-15T22:00:00Z"
       },
       "busType": ["non-ac"],
-      "amodities": ["waterbattle"]
+      "amenities": ["waterbattle"]
     }
   ]
 }
@@ -200,7 +200,7 @@ OUTPUT (200):
     "departure": { "location": "Delhi", "date": "2026-02-15T10:00:00Z" },
     "arrival": { "location": "Mumbai", "date": "2026-02-15T22:00:00Z" },
     "busType": ["non-ac"],
-    "amodities": ["waterbattle"],
+    "amenities": ["waterbattle"],
     "seatSet": [...]
   },
   "availableSeats": 35
@@ -233,7 +233,7 @@ INPUT:
     "date": "2026-02-15T22:00:00Z"        // Required: ISO8601 date
   },
   "busType": ["non-ac"],                   // Optional: Array of types (ac, non-ac, sleeper)
-  "amodities": ["waterbattle"]             // Optional: Array of amenities (waterbattle, charger, wifi)
+  "amenities": ["waterbattle"]             // Optional: Array of amenities (waterbattle, charger, wifi)
 }
 
 OUTPUT (201):
@@ -254,7 +254,7 @@ OUTPUT (201):
     "departure": { "location": "Delhi", "date": "2026-02-15T10:00:00Z" },
     "arrival": { "location": "Mumbai", "date": "2026-02-15T22:00:00Z" },
     "busType": ["non-ac"],
-    "amodities": ["waterbattle"]
+    "amenities": ["waterbattle"]
   },
   "availableSeats": 40
 }
@@ -284,7 +284,7 @@ INPUT (all optional):
   "departure": { "location": "New Delhi", "date": "2026-02-16T10:00:00Z" },
   "arrival": { "location": "New Mumbai", "date": "2026-02-16T22:00:00Z" },
   "busType": ["ac"],
-  "amodities": ["waterbattle", "charger", "wifi"]
+  "amenities": ["waterbattle", "charger", "wifi"]
 }
 
 OUTPUT (200):
@@ -426,7 +426,7 @@ curl -X POST http://localhost:3000/swiftbus/v1/bus \
     "departure":{"location":"Delhi","date":"2026-02-15T10:00:00Z"},
     "arrival":{"location":"Mumbai","date":"2026-02-15T22:00:00Z"},
     "busType":["non-ac"],
-    "amodities":["waterbattle"]
+    "amenities":["waterbattle"]
   }'
 ```
 

@@ -1,11 +1,13 @@
 import Payment from "../../database/Payment.js";
 import Bus from "../../database/Bus.js";
+import User from "../../database/User.js";
 
 const makePayment = async (req, res) => {
 
     try {
 
-        const { paymentId, busId, seat, name, journeyDate, buyingDate = new Date() } = req.body;
+        const { busId, seat, departureDate } = req.body;
+        const userId = req?.user?.id;
 
         const bus = await Bus.findById(busId);
         if (!bus) {
@@ -24,20 +26,32 @@ const makePayment = async (req, res) => {
         }
 
         const payment = await Payment.create({
-            paymentId,
+            userId,
+            busId,
             success: true,
             amount: requestedSeatObjects.length * bus.price,
             quantity: requestedSeatObjects.length
         });
 
         requestedSeatObjects.forEach(s => {
-            s.booked.owner = paymentId;
-            s.booked.journeyDate = journeyDate;
-            s.booked.name = name;
-            s.booked.buyingDate = buyingDate;
+            s.booked.owner = userId;
+            s.booked.departureDate = departureDate;
+            s.booked.buyingDate = new Date();
         });
 
         await bus.save();
+
+        await User.findByIdAndUpdate(userId, {
+            $push: {
+                booking: {
+                    busId: busId,
+                    departureDate: departureDate,
+                    bookingDate: new Date(),
+                    seats: seat, 
+                    amount: requestedSeatObjects.length * bus.price
+                }
+            }
+        });
 
         res.status(201).json({
             message: 'Payment successful',
@@ -76,7 +90,7 @@ export default makePayment;
 //                     "seatSet.$[elem].booked.owner": paymentId,
 //                     "seatSet.$[elem].booked.name": name,
 //                     "seatSet.$[elem].booked.buyingDate": buyingDate,
-//                     "seatSet.$[elem].booked.journeyDate": journeyDate 
+//                     "seatSet.$[elem].booked.journeyDate": journeyDate
 //                 }
 //             },
 //             {

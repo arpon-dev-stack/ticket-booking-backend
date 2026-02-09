@@ -445,7 +445,7 @@ Expected Output (200):
         "date": "2026-02-10T22:00:00Z"
       },
       "busType": ["non-ac"],
-      "amodities": ["waterbattle"],
+      "amenities": ["waterbattle"],
       "seatSet": []
     }
   ]
@@ -529,7 +529,7 @@ Expected Output (200):
       "date": "2026-02-10T22:00:00Z"
     },
     "busType": ["non-ac"],
-    "amodities": ["waterbattle"],
+    "amenities": ["waterbattle"],
     "seatSet": []
   }
 }
@@ -585,7 +585,7 @@ Input:
     "date": "2026-02-10T22:00:00Z"
   },
   "busType": ["non-ac"],
-  "amodities": ["waterbattle", "charger"]
+  "amenities": ["waterbattle", "charger"]
 }
 
 Expected Output (201):
@@ -604,7 +604,7 @@ Expected Output (201):
       "date": "2026-02-10T22:00:00Z"
     },
     "busType": ["non-ac"],
-    "amodities": ["waterbattle", "charger"]
+    "amenities": ["waterbattle", "charger"]
   }
 }
 ```
@@ -762,7 +762,7 @@ Input:
 {
   "totalSeat": 50,
   "busType": ["ac"],
-  "amodities": ["waterbattle", "charger", "wifi"]
+  "amenities": ["waterbattle", "charger", "wifi"]
 }
 
 Expected Output (200):
@@ -772,7 +772,7 @@ Expected Output (200):
     "_id": "507f1f77bcf86cd799439011",
     "totalSeat": 50,
     "busType": ["ac"],
-    "amodities": ["waterbattle", "charger", "wifi"],
+    "amenities": ["waterbattle", "charger", "wifi"],
     ...
   }
 }

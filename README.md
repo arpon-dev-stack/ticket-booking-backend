@@ -151,7 +151,7 @@ curl -X POST http://localhost:3000/swiftbus/v1/bus \
       "date": "2026-02-15T22:00:00Z"
     },
     "busType": ["non-ac"],
-    "amodities": ["waterbattle", "charger"]
+    "amenities": ["waterbattle", "charger"]
   }'
 ```
 
@@ -211,7 +211,7 @@ index.js                       # Entry point
   departure: { location, date },
   arrival: { location, date },
   busType: [String],
-  amodities: [String]
+  amenities: [String]
 }
 ```
 

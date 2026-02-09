@@ -356,7 +356,7 @@ describe('Bus Ticket Service API - Complete Test Suite', () => {
               date: '2026-02-20T22:00:00Z'
             },
             busType: ['non-ac'],
-            amodities: ['waterbattle']
+            amenities: ['waterbattle']
           });
 
         expect(response.status).toBe(401);
@@ -380,7 +380,7 @@ describe('Bus Ticket Service API - Complete Test Suite', () => {
               date: '2026-02-20T22:00:00Z'
             },
             busType: ['non-ac'],
-            amodities: ['waterbattle']
+            amenities: ['waterbattle']
           });
 
         expect(response.status).toBe(403);
@@ -405,7 +405,7 @@ describe('Bus Ticket Service API - Complete Test Suite', () => {
               date: '2026-02-20T22:00:00Z'
             },
             busType: ['non-ac'],
-            amodities: ['waterbattle']
+            amenities: ['waterbattle']
           });
 
         expect(response.status).toBe(201);
@@ -456,7 +456,7 @@ describe('Bus Ticket Service API - Complete Test Suite', () => {
               date: '2026-02-20T22:00:00Z'
             },
             busType: ['non-ac'],
-            amodities: ['waterbattle']
+            amenities: ['waterbattle']
           });
 
         // Try to create second bus with same number

@@ -2,7 +2,7 @@ import Bus from "../../database/Bus.js";
 
 const insertBus = async (req, res) => {
     try {
-        const { busNumber, totalSeat, seatsPerRow, departure, arrival, amodities, busType, price } = req.body;
+        const { busNumber, totalSeat, seatsPerRow, departure, arrival, amenities, busType, price } = req.body;
 
         const existingBus = await Bus.findOne({ busNumber });
         if (existingBus) {
@@ -15,7 +15,7 @@ const insertBus = async (req, res) => {
             seatsPerRow: seatsPerRow || 4,
             departure,
             arrival,
-            amodities: amodities || ['waterbattle'],
+            amenities: amenities || ['waterbattle'],
             busType: busType || ['non-ac'],
             price
         });

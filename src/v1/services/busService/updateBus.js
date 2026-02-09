@@ -3,7 +3,7 @@ import Bus from "../../database/Bus.js";
 const updateBus = async (req, res) => {
     try {
         const { id } = req.params;
-        const { busNumber, totalSeat, seatsPerRow, departure, arrival, amodities, busType } = req.body;
+        const { busNumber, totalSeat, seatsPerRow, departure, arrival, amenities, busType } = req.body;
 
         // Find bus
         const bus = await Bus.findById(id);
@@ -20,7 +20,7 @@ const updateBus = async (req, res) => {
         if (seatsPerRow) bus.seatsPerRow = seatsPerRow;
         if (departure) bus.departure = { ...bus.departure, ...departure };
         if (arrival) bus.arrival = { ...bus.arrival, ...arrival };
-        if (amodities) bus.amodities = amodities;
+        if (amenities) bus.amenities = amenities;
         if (busType) bus.busType = busType;
 
         // Regenerate seats if config changed

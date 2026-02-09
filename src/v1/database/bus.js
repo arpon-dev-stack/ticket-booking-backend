@@ -27,7 +27,7 @@ const busSchema = mongoose.Schema({
         location: { type: String, required: true },
         date: { type: Date, required: true }
     },
-    amodities: {
+    amenities: {
         type: [String],
         enum: ['waterbattle', 'charger', 'wifi'],
         default: ['waterbattle']
@@ -66,5 +66,11 @@ busSchema.pre('save', function () {
         }
     }
 });
+
+busSchema.index({
+    'departure.location': 1,
+    'arrival.location': 1,
+    'departure.date': 1
+})
 
 export default mongoose.model('Bus', busSchema);

@@ -1,7 +1,11 @@
-import { body, param, validationResult } from 'express-validator';
+import { query, body, param, validationResult } from 'express-validator';
 
 // Get Buses Validation (for query filters)
 const getBusesValidation = [
+    query('from').optional().trim().isString().withMessage('Enter your departure'),
+    query('to').optional().trim().isString().withMessage('Enter you destination'),
+    query('date').optional().isDate().withMessage('Enter valid date'),
+    query('page').optional().isInt({min: 1}).withMessage('Enter valid page number'),
     (req, res, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -34,7 +38,7 @@ const createBusValidation = [
     body('arrival.location').isString().trim().notEmpty().withMessage('Arrival location is required'),
     body('arrival.date').isISO8601().withMessage('Arrival date must be a valid date'),
     body('busType').optional().isArray().withMessage('Bus type must be an array'),
-    body('amodities').optional().isArray().withMessage('Amenities must be an array'),
+    body('amenities').optional().isArray().withMessage('Amenities must be an array'),
     body('price').notEmpty().isNumeric().withMessage('Seat price have to be provide'),
 
     (req, res, next) => {
@@ -57,7 +61,7 @@ const updateBusValidation = [
     body('arrival.location').optional().isString().trim(),
     body('arrival.date').optional().isISO8601().withMessage('Arrival date must be a valid date'),
     body('busType').optional().isArray().withMessage('Bus type must be an array'),
-    body('amodities').optional().isArray().withMessage('Amenities must be an array'),
+    body('amenities').optional().isArray().withMessage('Amenities must be an array'),
 
     (req, res, next) => {
         const errors = validationResult(req);

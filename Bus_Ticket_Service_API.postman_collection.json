@@ -413,7 +413,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"busNumber\": \"DL-01\",\n  \"totalSeat\": 45,\n  \"departure\": {\n    \"location\": \"Delhi\",\n    \"date\": \"2026-02-15T10:00:00Z\"\n  },\n  \"arrival\": {\n    \"location\": \"Mumbai\",\n    \"date\": \"2026-02-15T22:00:00Z\"\n  },\n  \"busType\": [\"non-ac\"],\n  \"amodities\": [\"waterbattle\", \"charger\"]\n}"
+              "raw": "{\n  \"busNumber\": \"DL-01\",\n  \"totalSeat\": 45,\n  \"departure\": {\n    \"location\": \"Delhi\",\n    \"date\": \"2026-02-15T10:00:00Z\"\n  },\n  \"arrival\": {\n    \"location\": \"Mumbai\",\n    \"date\": \"2026-02-15T22:00:00Z\"\n  },\n  \"busType\": [\"non-ac\"],\n  \"amenities\": [\"waterbattle\", \"charger\"]\n}"
             },
             "url": {
               "raw": "http://localhost:3000/swiftbus/v1/bus",
@@ -505,7 +505,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"totalSeat\": 50,\n  \"busType\": [\"ac\"],\n  \"amodities\": [\"waterbattle\", \"charger\", \"wifi\"]\n}"
+              "raw": "{\n  \"totalSeat\": 50,\n  \"busType\": [\"ac\"],\n  \"amenities\": [\"waterbattle\", \"charger\", \"wifi\"]\n}"
             },
             "url": {
               "raw": "http://localhost:3000/swiftbus/v1/bus/{{busId}}",

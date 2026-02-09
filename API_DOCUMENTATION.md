@@ -170,7 +170,7 @@ http://localhost:PORT/swiftbus
           "date": "2026-02-10T22:00:00Z"
         },
         "busType": ["non-ac"],
-        "amodities": ["waterbattle"]
+        "amenities": ["waterbattle"]
       }
     ]
   }
@@ -205,7 +205,7 @@ http://localhost:PORT/swiftbus
         "date": "2026-02-10T22:00:00Z"
       },
       "busType": ["non-ac"],
-      "amodities": ["waterbattle"],
+      "amenities": ["waterbattle"],
       "seatSet": [...]
     },
     "availableSeats": 40
@@ -236,7 +236,7 @@ http://localhost:PORT/swiftbus
       "date": "2026-02-10T22:00:00Z"
     },
     "busType": ["non-ac"],
-    "amodities": ["waterbattle", "charger"]
+    "amenities": ["waterbattle", "charger"]
   }
   ```
 - **Validation Rules**:
@@ -249,7 +249,7 @@ http://localhost:PORT/swiftbus
   - `arrival.location`: Required, string
   - `arrival.date`: Required, valid ISO8601 date
   - `busType`: Optional, array (ac, non-ac, sleeper)
-  - `amodities`: Optional, array (waterbattle, charger, wifi)
+  - `amenities`: Optional, array (waterbattle, charger, wifi)
 - **Response** (201):
   ```json
   {
@@ -296,7 +296,7 @@ http://localhost:PORT/swiftbus
       "date": "2026-02-11T22:00:00Z"
     },
     "busType": ["ac"],
-    "amodities": ["waterbattle", "charger", "wifi"]
+    "amenities": ["waterbattle", "charger", "wifi"]
   }
   ```
 - **Note**: If `totalSeat` or `seatsPerRow` is updated, all seats will be regenerated automatically

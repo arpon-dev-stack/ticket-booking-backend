@@ -8,6 +8,7 @@ import { signupValidation, signinValidation, updateUserValidation, deleteUserVal
 import { authorize, verify } from '../middleware/verify.js';
 import userInfo from '../services/userService/userInfo.js';
 import adminInfo from '../services/userService/adminInfo.js';
+import verifyUser from '../services/userService/verifyUser.js';
 
 const route = express.Router();
 
@@ -15,8 +16,9 @@ route.get('/', verify, authorize('user'), userInfo);
 route.get('/admin', verify, authorize('admin'), adminInfo);
 route.post('/signin', signinValidation, signInUser);
 route.post('/signUp', signupValidation, signUpUser);
-route.post('/logout', signOutUser);
+route.post('/signout', signOutUser);
 route.put('/:id', updateUserValidation, updateUser);
 route.delete('/:id', deleteUserValidation, deleteUser);
+route.post('/verify', verify, verifyUser);
 
 export default route;

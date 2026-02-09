@@ -1,6 +1,23 @@
 import mongoose from "mongoose";
 import bcrypt from 'bcrypt'
 
+const bookingSchema = mongoose.Schema({
+    busId: {
+        type: mongoose.Schema.ObjectId,
+        ref: "Bus"
+    },
+    departureDate: {
+        type: Date
+    },
+    bookingDate: {
+        type: Date
+    },
+    seats: [String],
+    amount: {
+        type: Number
+    }
+});
+
 const userSchema = mongoose.Schema({
     name: { type: String, required: true },
     role: {
@@ -9,7 +26,8 @@ const userSchema = mongoose.Schema({
         default: ['user']
     },
     email: { type: String, required: true, unique: true },
-    password: { type: String, required: true }
+    password: { type: String, required: true },
+    booking: [bookingSchema]
 });
 
 userSchema.pre('save', async function () {
