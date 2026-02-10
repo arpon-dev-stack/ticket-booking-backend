@@ -4,7 +4,7 @@ import { query, body, param, validationResult } from 'express-validator';
 const getBusesValidation = [
     query('from').optional().trim().isString().withMessage('Enter your departure'),
     query('to').optional().trim().isString().withMessage('Enter you destination'),
-    query('date').optional().isDate().withMessage('Enter valid date'),
+    query('date').optional().trim().isISO8601({strict: false}).withMessage('Enter valid date'),
     query('page').optional().isInt({min: 1}).withMessage('Enter valid page number'),
     (req, res, next) => {
         const errors = validationResult(req);

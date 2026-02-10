@@ -11,10 +11,7 @@ const makePaymentValidation = [
             }
             return true;
         }),
-    body('departureDate')
-        .exists().bail().withMessage('Journey date is required')
-        .isISO8601().withMessage('Journey date must be a valid date format'),
-
+        
     (req, res, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {

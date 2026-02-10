@@ -1,12 +1,13 @@
 import Payment from "../../database/Payment.js";
 import Bus from "../../database/Bus.js";
 import User from "../../database/User.js";
+import { today } from "../../utils/dateHandler.js";
 
 const makePayment = async (req, res) => {
 
     try {
 
-        const { busId, seat, departureDate } = req.body;
+        const { busId, seat } = req.body;
         const userId = req?.user?.id;
 
         const bus = await Bus.findById(busId);
@@ -35,8 +36,7 @@ const makePayment = async (req, res) => {
 
         requestedSeatObjects.forEach(s => {
             s.booked.owner = userId;
-            s.booked.departureDate = departureDate;
-            s.booked.buyingDate = new Date();
+            s.booked.bookingDate = today;
         });
 
         await bus.save();
@@ -45,8 +45,8 @@ const makePayment = async (req, res) => {
             $push: {
                 booking: {
                     busId: busId,
-                    departureDate: departureDate,
-                    bookingDate: new Date(),
+                    departureDate: bus.departure.date,
+                    bookingDate: today,
                     seats: seat, 
                     amount: requestedSeatObjects.length * bus.price
                 }
@@ -74,7 +74,7 @@ export default makePayment;
 
 // const makePayment = async (req, res) => {
 //     try {
-//         const { paymentId, busId, seat, name, buyingDate = new Date(), journeyDate } = req.body;
+//         const { paymentId, busId, seat, name, bookingDate = today, journeyDate } = req.body;
 
 //         const updatedBus = await Bus.findOneAndUpdate(
 //             {
@@ -89,7 +89,7 @@ export default makePayment;
 //                 $set: {
 //                     "seatSet.$[elem].booked.owner": paymentId,
 //                     "seatSet.$[elem].booked.name": name,
-//                     "seatSet.$[elem].booked.buyingDate": buyingDate,
+//                     "seatSet.$[elem].booked.bookingDate": bookingDate,
 //                     "seatSet.$[elem].booked.journeyDate": journeyDate
 //                 }
 //             },

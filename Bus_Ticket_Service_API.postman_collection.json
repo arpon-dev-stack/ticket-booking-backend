@@ -448,7 +448,7 @@
           }
         },
         {
-          "name": "Create Bus - Invalid TotalSeat",
+          "name": "Create Bus - Invalid totalSeat",
           "request": {
             "method": "POST",
             "header": [

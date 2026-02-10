@@ -8,8 +8,7 @@ const seatSchema = mongoose.Schema({
             ref: 'User'
         },
         name: { type: String },
-        buyingDate: { type: Date },
-        journeyDate: { type: Date }
+        bookingDate: { type: Date },
     }
 });
 
@@ -40,13 +39,31 @@ const busSchema = mongoose.Schema({
 });
 
 busSchema.virtual('availableSeats').get(function () {
+
     if (!this.seatSet || this.seatSet.length === 0) return this.totalSeat;
-    const bookedSeats = this.seatSet.filter(seat => seat.booked && seat.booked.owner).length;
-    return this.totalSeat - bookedSeats;
+
+    const available = this.seatSet.filter(seat => !seat.booked.owner).length;
+    return available;
 });
 
-busSchema.set('toJSON', { virtuals: true });
-
+busSchema.set('toJSON', {
+    virtuals: true,
+    versionKey: false,
+    transform: function (doc, ret) {
+        delete ret.seatSet;
+        delete ret.seatsPerRow;
+        return ret;
+    }
+});
+busSchema.set('toObject', {
+    virtuals: true,
+    versionKey: false,
+    transform: function (doc, ret) {
+        delete ret.seatSet;      // Hide the big array from the API response
+        delete ret.seatsPerRow;  // Hide this too
+        return ret;
+    }
+});
 busSchema.pre('save', function () {
     if (!this.seatSet || this.seatSet.length === 0) {
         this.seatSet = [];
