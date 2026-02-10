@@ -1,4 +1,4 @@
-import Bus from "../../database/Bus.js";
+import Bus from "../../database/bus.js";
 
 const insertBus = async (req, res) => {
     try {

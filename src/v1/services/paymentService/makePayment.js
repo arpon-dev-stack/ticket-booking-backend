@@ -1,6 +1,6 @@
-import Payment from "../../database/Payment.js";
-import Bus from "../../database/Bus.js";
-import User from "../../database/User.js";
+import Payment from "../../database/payment.js";
+import Bus from "../../database/bus.js";
+import User from "../../database/user.js";
 import { today } from "../../utils/dateHandler.js";
 
 const makePayment = async (req, res) => {

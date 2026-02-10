@@ -1,4 +1,4 @@
-import User from "../../database/User.js";
+import User from "../../database/user.js";
 import bcrypt from 'bcrypt';
 import { genAccessToken } from "../../utils/token.js";
 

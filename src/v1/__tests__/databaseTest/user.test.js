@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import Bus from '../../database/User.js'; // Adjust path to your model
+import Bus from '../../database/user.js'; // Adjust path to your model
 
 let mongoServer;
 

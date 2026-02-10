@@ -1,4 +1,4 @@
-import User from "../../database/User.js";
+import User from "../../database/user.js";
 
 const updateUser = async (req, res) => {
     try {

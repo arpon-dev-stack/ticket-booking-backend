@@ -1,4 +1,4 @@
-import Bus from "../../database/Bus.js";
+import Bus from "../../database/bus.js";
 import { today } from "../../utils/dateHandler.js";
 
 const getBuses = async (req, res) => {

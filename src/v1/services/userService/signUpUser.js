@@ -1,4 +1,4 @@
-import User from "../../database/User.js";
+import User from "../../database/user.js";
 import { validationResult } from "express-validator"
 
 const signUpUser = async (req, res) => {
