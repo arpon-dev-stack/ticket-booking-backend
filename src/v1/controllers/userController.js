@@ -12,7 +12,7 @@ import verifyUser from '../services/userService/verifyUser.js';
 
 const route = express.Router();
 
-route.get('/', verify, authorize('user'), userInfo);
+route.get('/user', verify, authorize('user'), userInfo);
 route.get('/admin', verify, authorize('admin'), adminInfo);
 route.post('/signin', signinValidation, signInUser);
 route.post('/signUp', signupValidation, signUpUser);

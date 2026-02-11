@@ -8,10 +8,17 @@ import route from './src/v1/routes/rootRoute.js';
 
 const app = express();
 
-const port = process.env.PORT;
+const developmentPort = process.env.DEVELOPMENTPORT;
+const productionPort = process.env.PRODUCTIONPORT;
+const developmentOrigin = process.env.DEVELOPMENTORIGIN;
+const productionOrigin = process.env.PRODUCTIONORIGIN;
+const application = process.env.APPLICATION;
+
+const port = application === 'production' ? productionPort : developmentPort;
+const frontend = application === 'production' ? productionOrigin : developmentOrigin;
 
 app.use(cors({
-  origin: 'http://localhost:5173'
+  origin: frontend
 }));
 app.use(express.json());
 // app.use(expressValidator());
